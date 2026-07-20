@@ -119,17 +119,27 @@ export default function HomePage() {
           <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-slate-300">
             Orphan Access Initiative
           </span>
-          <nav className="hidden gap-6 text-xs font-medium uppercase tracking-widest text-slate-400 sm:flex">
-            <Link href="/patient" className="transition-colors hover:text-teal">
-              Patient
-            </Link>
-            <Link href="/clinical" className="transition-colors hover:text-clinicalblue">
-              Clinical
-            </Link>
-            <Link href="/bio" className="transition-colors hover:text-gold">
-              Diligence
-            </Link>
-          </nav>
+          <div className="flex items-center gap-6">
+            <nav className="hidden gap-6 text-xs font-medium uppercase tracking-widest text-slate-400 sm:flex">
+              <Link href="/patient" className="transition-colors hover:text-teal">
+                Patient
+              </Link>
+              <Link href="/clinical" className="transition-colors hover:text-clinicalblue">
+                Clinical
+              </Link>
+              <Link href="/bio" className="transition-colors hover:text-gold">
+                Diligence
+              </Link>
+            </nav>
+            <a
+              href="https://www.orphanaccessinitiative.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[11px] font-medium uppercase tracking-widest text-slate-500 transition-colors hover:text-teal"
+            >
+              &larr; Back to OAI
+            </a>
+          </div>
         </div>
       </header>
 

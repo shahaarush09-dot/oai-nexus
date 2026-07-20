@@ -59,6 +59,17 @@ export default function Hero() {
           <span className="h-1.5 w-1.5 rounded-full bg-gold" />
           The first AI platform built for rare disease
         </div>
+
+        <div className="mt-8">
+          <a
+            href="https://www.orphanaccessinitiative.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-full bg-teal px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:scale-[1.03] hover:brightness-110"
+          >
+            Visit OAI Home Page
+          </a>
+        </div>
       </motion.div>
     </section>
   );
