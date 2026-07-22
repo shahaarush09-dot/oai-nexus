@@ -1,0 +1,10 @@
+{
+  "name": "OAI Nexus",
+  "short_name": "Nexus",
+  "description": "The first AI platform built specifically for rare disease.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0f1e",
+  "theme_color": "#2a9d8f",
+  "icons": []
+}

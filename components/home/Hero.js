@@ -3,8 +3,9 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import MolecularField from "./MolecularField";
+import ServiceCard from "./ServiceCard";
 
-export default function Hero() {
+export default function Hero({ modules = [] }) {
   const sectionRef = useRef(null);
   const reduceMotion = useReducedMotion();
 
@@ -43,13 +44,15 @@ export default function Hero() {
 
       <motion.div
         style={contentStyle}
-        className="relative mx-auto flex min-h-[58vh] max-w-6xl flex-col justify-center px-6 py-16"
+        className="relative mx-auto flex min-h-[85vh] max-w-6xl flex-col justify-center px-6 py-16 lg:py-20"
       >
-        <p className="text-xs font-semibold uppercase tracking-[0.32em] text-gold">
-          Rare Disease Intelligence Platform
-        </p>
-        <h1 className="mt-5 font-serif text-[3.4rem] font-medium leading-[0.95] tracking-tight sm:text-[4.6rem] lg:text-[5.6rem]">
-          Nexus
+        <h1 className="flex flex-col">
+          <span className="text-xs font-semibold uppercase tracking-[0.32em] text-gold">
+            Rare Disease Intelligence Platform
+          </span>
+          <span className="mt-5 font-serif text-[3.4rem] font-medium leading-[0.95] tracking-tight sm:text-[4.6rem] lg:text-[5.6rem]">
+            Nexus
+          </span>
         </h1>
         <p className="mt-6 max-w-xl font-serif text-lg leading-relaxed text-slate-200 sm:text-xl">
           A rare disease intelligence platform connecting education,
@@ -70,6 +73,14 @@ export default function Hero() {
             Visit OAI Home Page
           </a>
         </div>
+
+        {modules.length > 0 && (
+          <div className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-3">
+            {modules.map((m, i) => (
+              <ServiceCard key={m.href} module={m} delay={i * 120} />
+            ))}
+          </div>
+        )}
       </motion.div>
     </section>
   );

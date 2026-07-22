@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "PowerShell(Remove-Item *)",
-      "Skill(claude-api)"
+      "Skill(claude-api)",
+      "Bash(node *)"
     ]
   }
 }

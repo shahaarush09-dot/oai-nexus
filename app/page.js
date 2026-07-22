@@ -2,8 +2,58 @@ import Link from "next/link";
 import Hero from "@/components/home/Hero";
 import Reveal from "@/components/home/Reveal";
 import ParallaxLayer from "@/components/home/ParallaxLayer";
-import ServiceCard from "@/components/home/ServiceCard";
 import ModuleSection from "@/components/home/ModuleSection";
+
+const faqs = [
+  {
+    question: "What is OAI Nexus?",
+    answer:
+      "OAI Nexus is the first AI platform built specifically for rare disease. It has three modules: Patient Nexus for patient education, Clinical Nexus for research, and Nexus Diligence for drug evaluation.",
+  },
+  {
+    question: "Is OAI Nexus the first rare disease AI platform?",
+    answer:
+      "Yes, OAI Nexus is believed to be the first publicly available AI platform purpose-built for rare disease, not a general medical AI adapted for rare disease.",
+  },
+  {
+    question: "Who is OAI Nexus for?",
+    answer:
+      "OAI Nexus serves three audiences: patients and families seeking rare disease education, physicians and researchers needing clinical evidence, and biotech investors and professionals evaluating orphan drugs.",
+  },
+  {
+    question: "What are the three modules of OAI Nexus?",
+    answer:
+      "Patient Nexus is for patient education, Clinical Nexus is for research professionals, and Nexus Diligence is for biotech and investment due diligence on orphan drugs.",
+  },
+  {
+    question: "Is OAI Nexus free to use?",
+    answer:
+      "Yes, OAI Nexus is free and accessible to patients, clinicians, researchers, students, and biotech professionals working in rare disease.",
+  },
+  {
+    question: "What is an orphan drug?",
+    answer:
+      "An orphan drug is a medication developed to treat a rare disease or condition. In the US, a disease is considered rare if it affects fewer than 200,000 people.",
+  },
+  {
+    question: "What is the Orphan Access Initiative?",
+    answer:
+      "The Orphan Access Initiative is a student-led research organization that built OAI Nexus to understand why promising treatments don't reach rare disease patients.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
+    },
+  })),
+};
 
 const stats = [
   {
@@ -98,18 +148,6 @@ function HelixDivider() {
   );
 }
 
-function SectionGlowWash({ tint = "rgba(200,162,74,0.16)" }) {
-  return (
-    <div
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-x-0 top-0 h-40"
-      style={{
-        background: `linear-gradient(to bottom, ${tint}, transparent)`,
-      }}
-    />
-  );
-}
-
 export default function HomePage() {
   return (
     <div className="bg-navy-900 font-plex text-white selection:bg-gold selection:text-navy-900">
@@ -143,18 +181,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      <Hero />
-
-      {/* Quick services strip — all three visible immediately, no deep copy */}
-      <section className="relative overflow-hidden border-t border-navy-600/60 bg-navy-950 py-10">
-        <ParallaxLayer pattern="lines" color="rgba(200,162,74,0.1)" speed={24} opacity={0.5} />
-        <SectionGlowWash tint="rgba(200,162,74,0.12)" />
-        <div className="relative mx-auto grid max-w-6xl grid-cols-1 gap-4 px-6 sm:grid-cols-3">
-          {modules.map((m, i) => (
-            <ServiceCard key={m.href} module={m} delay={i * 120} />
-          ))}
-        </div>
-      </section>
+      <Hero modules={modules} />
 
       {/* Positioning section */}
       <section className="relative border-t border-navy-600/60 bg-navy-900 py-24">
@@ -172,12 +199,12 @@ export default function HomePage() {
             <p className="text-xs font-semibold uppercase tracking-[0.32em] text-gold">
               What Nexus Is
             </p>
-            <p className="mt-6 font-serif text-2xl leading-snug text-white sm:text-3xl">
+            <h2 className="mt-6 font-serif text-2xl font-normal leading-snug text-white sm:text-3xl">
               Rare disease has never had a general-purpose AI platform built
               for it. Nexus is the first publicly available AI platform
               designed specifically for rare disease, not a general medical
               chatbot repurposed for this use.
-            </p>
+            </h2>
             <p className="mt-6 max-w-2xl text-[15px] leading-relaxed text-slate-300">
               That distinction matters because rare disease is not one
               problem — it&rsquo;s three, held together by the same
@@ -222,6 +249,9 @@ export default function HomePage() {
           speed={60}
           opacity={0.4}
         />
+        <h2 className="relative mx-auto max-w-6xl px-6 pt-8 text-xs font-semibold uppercase tracking-[0.28em] text-slate-500">
+          Three Specialized AI Modules for Rare Disease
+        </h2>
         {modules.map((m, i) => (
           <div key={m.href} className="relative">
             {i > 0 && <HelixDivider />}
@@ -230,9 +260,111 @@ export default function HomePage() {
         ))}
       </section>
 
-      <footer className="border-t border-navy-600/60 bg-navy-950 py-8 text-center text-xs text-slate-500">
-        Orphan Access Initiative — Nexus. For educational and research
-        purposes only. Not medical advice.
+      {/* FAQ — mirrors the FAQPage JSON-LD below; kept visible rather than
+          hidden off-screen, since structured data should reflect what a
+          user actually sees on the page. */}
+      <section className="relative border-t border-navy-600/60 bg-navy-900 py-20">
+        <div className="mx-auto max-w-3xl px-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.32em] text-gold">
+            Questions
+          </p>
+          <h2 className="mt-4 font-serif text-2xl font-normal text-white sm:text-3xl">
+            Frequently Asked Questions About OAI Nexus
+          </h2>
+          <dl className="mt-10 flex flex-col gap-8">
+            {faqs.map((faq) => (
+              <div key={faq.question} className="border-t border-navy-600/60 pt-6">
+                <dt>
+                  <h3 className="font-serif text-lg text-white">{faq.question}</h3>
+                </dt>
+                <dd className="mt-2 text-sm leading-relaxed text-slate-300">
+                  {faq.answer}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+
+      <footer role="contentinfo" className="border-t border-navy-600/60 bg-navy-950">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-6 py-14 sm:grid-cols-3">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-300">
+              OAI Nexus
+            </p>
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-slate-500">
+              The first AI platform built specifically for rare disease.
+              Education for patients, research tools for clinicians,
+              investment analysis for biotech.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-300">
+              Platform
+            </h3>
+            <ul className="mt-3 flex flex-col gap-2 text-sm text-slate-500">
+              <li>
+                <Link href="/" className="transition-colors hover:text-teal">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link href="/patient" className="transition-colors hover:text-teal">
+                  Patient Nexus
+                </Link>
+              </li>
+              <li>
+                <Link href="/clinical" className="transition-colors hover:text-clinicalblue">
+                  Clinical Nexus
+                </Link>
+              </li>
+              <li>
+                <Link href="/bio" className="transition-colors hover:text-gold">
+                  Nexus Diligence
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-300">
+              Organization
+            </h3>
+            <ul className="mt-3 flex flex-col gap-2 text-sm text-slate-500">
+              <li>
+                <a
+                  href="https://www.orphanaccessinitiative.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors hover:text-teal"
+                >
+                  Orphan Access Initiative
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.linkedin.com/company/111885668/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors hover:text-teal"
+                >
+                  LinkedIn
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="border-t border-navy-600/60 px-6 py-6 text-center text-xs text-slate-500">
+          Orphan Access Initiative — Nexus. For educational and research
+          purposes only. Not medical advice.
+        </div>
       </footer>
     </div>
   );
