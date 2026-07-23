@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import BioIntakeForm from "@/components/bio/BioIntakeForm";
 import ReportView from "@/components/bio/ReportView";
+import ReportGeneratingStatus from "@/components/bio/ReportGeneratingStatus";
 import { generateUUID } from "@/lib/generateUUID";
 
 const EMPTY_FORM = {
@@ -30,6 +31,42 @@ const EMPTY_FORM = {
   fdaBreakthrough: "",
   emaOrphan: "",
   regulatoryNotes: "",
+  // Step 5 — Commercialization & Reimbursement
+  salesForceStatus: "",
+  partneringRegions: "",
+  salesForceSize: "",
+  launchRegions: [],
+  patientIdentification: "",
+  patientRegistry: "",
+  timeToHalfMarket: "",
+  accessBarriers: [],
+  primaryPayers: [],
+  commercialCoverageLikelihood: "",
+  estimatedCopay: "",
+  reimbursementPrecedent: "",
+  yearsToApproval: "",
+  yearsApprovalToPeak: "",
+  expectedPeakSales: "",
+  approvedCompetitorsCount: "",
+  pipelineCompetitorsCount: "",
+  peakMarketShare: "",
+  competitiveAdvantage: "",
+  standardOfCareLevel: "",
+  unmetNeed: "",
+  differentiation: "",
+  patientPreference: "",
+  // Step 6 — Strategic Assumptions
+  basePeakSales: "",
+  netProfitMargin: "",
+  approvalProbability: "",
+  commercialSuccessProbability: "",
+  discountRate: "",
+  biggestValueDriver: "",
+  biggestRisk: "",
+  dealKillerEvent: "",
+  valueDoublingEvent: "",
+  comparableAssets: "",
+  comparablePeakSales: "",
 };
 
 export default function BioPageClient() {
@@ -37,11 +74,12 @@ export default function BioPageClient() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [report, setReport] = useState("");
+  const [scenarios, setScenarios] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
   const [conversationId, setConversationId] = useState(null);
 
   function handleNext() {
-    setStep((s) => Math.min(4, s + 1));
+    setStep((s) => Math.min(6, s + 1));
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -75,6 +113,7 @@ export default function BioPageClient() {
 
       const data = await res.json();
       setReport(data.report);
+      setScenarios(data.scenarios || null);
       setView("report");
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e) {
@@ -87,6 +126,7 @@ export default function BioPageClient() {
     setFormData(EMPTY_FORM);
     setStep(1);
     setReport("");
+    setScenarios(null);
     setConversationId(null);
     setView("form");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -118,18 +158,7 @@ export default function BioPageClient() {
             />
           )}
 
-          {view === "loading" && (
-            <div className="flex flex-col items-center justify-center gap-4 py-24">
-              <div className="flex gap-1.5">
-                <span className="h-3 w-3 animate-pulseDot rounded-full bg-gold [animation-delay:-0.32s]" />
-                <span className="h-3 w-3 animate-pulseDot rounded-full bg-gold [animation-delay:-0.16s]" />
-                <span className="h-3 w-3 animate-pulseDot rounded-full bg-gold" />
-              </div>
-              <p className="text-sm font-medium text-slate-500">
-                Generating Orphan Drug Intelligence Report...
-              </p>
-            </div>
-          )}
+          {view === "loading" && <ReportGeneratingStatus />}
 
           {view === "error" && (
             <div className="mx-auto max-w-xl">
@@ -148,6 +177,7 @@ export default function BioPageClient() {
           {view === "report" && (
             <ReportView
               report={report}
+              scenarios={scenarios}
               formData={formData}
               onStartOver={handleStartOver}
               conversationId={conversationId}

@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { parseReportSections } from "@/lib/parseReport";
 import BioFollowUpChat from "./BioFollowUpChat";
+import ScenarioCards from "./ScenarioCards";
 
-export default function ReportView({ report, formData, onStartOver, conversationId }) {
+export default function ReportView({ report, scenarios, formData, onStartOver, conversationId }) {
   const [copied, setCopied] = useState(false);
   const sections = parseReportSections(report);
 
@@ -71,6 +72,11 @@ export default function ReportView({ report, formData, onStartOver, conversation
                 <p key={j}>{para}</p>
               ))}
             </div>
+            {scenarios && /financial analysis/i.test(s.title) && (
+              <div className="mt-5">
+                <ScenarioCards scenarios={scenarios} />
+              </div>
+            )}
           </div>
         ))}
       </div>
