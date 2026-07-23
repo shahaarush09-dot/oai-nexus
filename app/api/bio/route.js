@@ -10,7 +10,7 @@ import { buildScenarios } from "@/lib/financialCalculations";
 // long. Vercel's default serverless function timeout (10-60s on Hobby) will
 // kill this well before it completes — this route needs a plan that supports
 // a longer maxDuration (Pro, or Hobby with Fluid Compute).
-export const maxDuration = 480;
+export const maxDuration = 300;
 
 const REPORT_MODEL = "claude-haiku-4-5-20251001";
 const CHAT_MODEL = "claude-haiku-4-5-20251001";
