@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import MolecularField from "./MolecularField";
 import ServiceCard from "./ServiceCard";
+import VideoShowcase from "./VideoShowcase";
 
 export default function Hero({ modules = [] }) {
   const sectionRef = useRef(null);
@@ -41,6 +42,8 @@ export default function Hero({ modules = [] }) {
             "radial-gradient(ellipse 70% 60% at 72% 40%, rgba(8,11,21,0) 20%, rgba(8,11,21,0.92) 72%, rgba(8,11,21,1) 100%)",
         }}
       />
+
+      <VideoShowcase />
 
       <motion.div
         style={contentStyle}
