@@ -46,15 +46,10 @@ module.exports = {
           "0%, 100%": { opacity: "0.5", transform: "scale(1)" },
           "50%": { opacity: "1", transform: "scale(1.08)" },
         },
-        ambientGlow: {
-          "0%, 100%": { opacity: "0.65" },
-          "50%": { opacity: "1" },
-        },
       },
       animation: {
         pulseDot: "pulseDot 1.4s infinite ease-in-out both",
         pulseGlow: "pulseGlow 2.6s infinite ease-in-out",
-        ambientGlow: "ambientGlow 6s infinite ease-in-out",
       },
     },
   },

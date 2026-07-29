@@ -13,7 +13,9 @@
       "Bash(/c/Users/ankit/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1.2-full_build/bin/ffmpeg.exe -y -ss 3 -i /c/Users/ankit/OneDrive/Desktop/oai-nexus-final-video.mp4 -frames:v 1 -q:v 3 /c/Users/ankit/oai-nexus/public/videos/promo-poster.jpg)",
       "Bash(/c/Users/ankit/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1.2-full_build/bin/ffmpeg.exe -y -i /c/Users/ankit/OneDrive/Desktop/oai-nexus-final-video.mp4 -vf scale=-2:1080,fps=30 -c:v libx264 -preset slow -crf 26 -pix_fmt yuv420p -movflags +faststart -c:a aac -b:a 96k /c/Users/ankit/oai-nexus/public/videos/oai-nexus-promo-h264.mp4)",
       "Bash(/c/Users/ankit/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1.2-full_build/bin/ffprobe.exe -hide_banner /c/Users/ankit/oai-nexus/public/videos/oai-nexus-promo.mp4)",
-      "Bash(powershell -NoProfile -Command \"Get-NetTCPConnection -LocalPort 3001 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id \\\\$_ -Force -ErrorAction SilentlyContinue }\")"
+      "Bash(powershell -NoProfile -Command \"Get-NetTCPConnection -LocalPort 3001 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id \\\\$_ -Force -ErrorAction SilentlyContinue }\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000 --max-time 5)",
+      "Bash(powershell -NoProfile -Command 'Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }')"
     ]
   }
 }
