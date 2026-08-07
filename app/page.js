@@ -3,6 +3,7 @@ import Hero from "@/components/home/Hero";
 import Reveal from "@/components/home/Reveal";
 import ParallaxLayer from "@/components/home/ParallaxLayer";
 import ModuleSection from "@/components/home/ModuleSection";
+import AmbientAudioSignal from "@/components/home/AmbientAudioSignal";
 
 const faqs = [
   {
@@ -151,6 +152,8 @@ function HelixDivider() {
 export default function HomePage() {
   return (
     <div className="bg-navy-900 font-plex text-white selection:bg-gold selection:text-navy-900">
+      <AmbientAudioSignal />
+
       {/* Top bar */}
       <header className="sticky top-0 z-30 border-b border-navy-600/60 bg-navy-900/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">

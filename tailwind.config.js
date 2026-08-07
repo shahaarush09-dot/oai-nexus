@@ -42,14 +42,14 @@ module.exports = {
           "0%, 80%, 100%": { opacity: "0.3" },
           "40%": { opacity: "1" },
         },
-        pulseGlow: {
-          "0%, 100%": { opacity: "0.5", transform: "scale(1)" },
-          "50%": { opacity: "1", transform: "scale(1.08)" },
+        soundbar: {
+          "0%, 100%": { transform: "scaleY(0.4)" },
+          "50%": { transform: "scaleY(1.4)" },
         },
       },
       animation: {
         pulseDot: "pulseDot 1.4s infinite ease-in-out both",
-        pulseGlow: "pulseGlow 2.6s infinite ease-in-out",
+        soundbar: "soundbar 0.9s ease-in-out infinite",
       },
     },
   },
