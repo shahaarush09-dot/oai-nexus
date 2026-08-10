@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ChatInterface from "@/components/ChatInterface";
+import ToolVideoGate from "@/components/ToolVideoGate";
 
 export const metadata = {
   title: "Patient Nexus | Rare Disease Education AI",
@@ -66,28 +67,34 @@ export default function PatientPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(patientAppSchema) }}
       />
-      <div className="mx-auto max-w-3xl px-6 py-10">
-        <Link href="/" className="text-sm text-slate-400 hover:text-slate-600">
-          &larr; OAI Nexus
-        </Link>
+      <ToolVideoGate
+        videoFileName="patient.mp4"
+        storageKey="tool-patient-video-seen"
+        ariaLabel="Patient Nexus introduction video"
+      >
+        <div className="mx-auto max-w-3xl px-6 py-10">
+          <Link href="/" className="text-sm text-slate-400 hover:text-slate-600">
+            &larr; OAI Nexus
+          </Link>
 
-        <h1 className="mt-3 text-2xl font-semibold text-slate-900">
-          Patient Nexus
-        </h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Rare Disease Education for Patients and Families
-        </p>
+          <h1 className="mt-3 text-2xl font-semibold text-slate-900">
+            Patient Nexus
+          </h1>
+          <p className="mt-1 text-sm text-slate-500">
+            Rare Disease Education for Patients and Families
+          </p>
 
-        <div className="mt-8">
-          <ChatInterface
-            apiPath="/api/patient"
-            examples={examples}
-            theme={theme}
-            placeholder="Ask about a condition, a treatment, or a trial..."
-            disclaimer="Nexus provides educational information only. It does not diagnose or treat, and does not replace advice from a qualified physician."
-          />
+          <div className="mt-8">
+            <ChatInterface
+              apiPath="/api/patient"
+              examples={examples}
+              theme={theme}
+              placeholder="Ask about a condition, a treatment, or a trial..."
+              disclaimer="Nexus provides educational information only. It does not diagnose or treat, and does not replace advice from a qualified physician."
+            />
+          </div>
         </div>
-      </div>
+      </ToolVideoGate>
     </div>
   );
 }

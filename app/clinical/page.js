@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ChatInterface from "@/components/ChatInterface";
+import ToolVideoGate from "@/components/ToolVideoGate";
 
 export const metadata = {
   title: "Clinical Nexus | Rare Disease Research Copilot",
@@ -67,28 +68,34 @@ export default function ClinicalPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(clinicalAppSchema) }}
       />
-      <div className="mx-auto max-w-3xl px-6 py-10">
-        <Link href="/" className="text-sm text-slate-400 hover:text-slate-600">
-          &larr; OAI Nexus
-        </Link>
+      <ToolVideoGate
+        videoFileName="clinical.mp4"
+        storageKey="tool-clinical-video-seen"
+        ariaLabel="Clinical Nexus introduction video"
+      >
+        <div className="mx-auto max-w-3xl px-6 py-10">
+          <Link href="/" className="text-sm text-slate-400 hover:text-slate-600">
+            &larr; OAI Nexus
+          </Link>
 
-        <h1 className="mt-3 text-2xl font-semibold text-slate-900">
-          Clinical Nexus
-        </h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Rare Disease Research Copilot
-        </p>
+          <h1 className="mt-3 text-2xl font-semibold text-slate-900">
+            Clinical Nexus
+          </h1>
+          <p className="mt-1 text-sm text-slate-500">
+            Rare Disease Research Copilot
+          </p>
 
-        <div className="mt-8">
-          <ChatInterface
-            apiPath="/api/clinical"
-            examples={examples}
-            theme={theme}
-            placeholder="Ask a research question..."
-            disclaimer="Designed for physicians, researchers, and students. Responses are summaries for research purposes and should be verified against primary literature."
-          />
+          <div className="mt-8">
+            <ChatInterface
+              apiPath="/api/clinical"
+              examples={examples}
+              theme={theme}
+              placeholder="Ask a research question..."
+              disclaimer="Designed for physicians, researchers, and students. Responses are summaries for research purposes and should be verified against primary literature."
+            />
+          </div>
         </div>
-      </div>
+      </ToolVideoGate>
     </div>
   );
 }

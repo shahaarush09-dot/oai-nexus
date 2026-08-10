@@ -1,4 +1,5 @@
 import BioPageClient from "@/components/bio/BioPageClient";
+import ToolVideoGate from "@/components/ToolVideoGate";
 
 export const metadata = {
   title: "Nexus Diligence | Orphan Drug Evaluator",
@@ -13,14 +14,14 @@ export const metadata = {
     "rare disease drug evaluation",
     "drug pipeline analysis",
   ],
-  alternates: { canonical: "/bio" },
+  alternates: { canonical: "/diligence" },
   openGraph: {
     title: "Nexus Diligence | Orphan Drug Intelligence",
     description:
       "Investment-grade analysis of orphan drug candidates. Built for biotech and investors.",
-    url: "/bio",
+    url: "/diligence",
     type: "website",
-    images: [{ url: "/bio-og.png", width: 1200, height: 630 }],
+    images: [{ url: "/diligence-og.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
@@ -29,27 +30,33 @@ export const metadata = {
   },
 };
 
-const bioAppSchema = {
+const diligenceAppSchema = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "@id": "https://oai-nexus.org/bio#app",
+  "@id": "https://oai-nexus.org/diligence#app",
   name: "Nexus Diligence",
   applicationCategory: "MedicalApplication",
   about: "Orphan Drug Evaluation",
   description: "Orphan drug intelligence evaluator for biotech and investment due diligence",
-  url: "https://oai-nexus.org/bio",
+  url: "https://oai-nexus.org/diligence",
   creator: { "@id": "https://oai-nexus.org/#organization" },
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
 };
 
-export default function BioPage() {
+export default function DiligencePage() {
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(bioAppSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(diligenceAppSchema) }}
       />
-      <BioPageClient />
+      <ToolVideoGate
+        videoFileName="diligence.mp4"
+        storageKey="tool-diligence-video-seen"
+        ariaLabel="Nexus Diligence introduction video"
+      >
+        <BioPageClient />
+      </ToolVideoGate>
     </>
   );
 }

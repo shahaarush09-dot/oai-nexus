@@ -111,7 +111,7 @@ const modules = [
   },
   {
     n: "03",
-    href: "/bio",
+    href: "/diligence",
     name: "Nexus Diligence",
     short: "Structured, investor-grade diligence on orphan drug candidates.",
     dot: "bg-gold",
@@ -168,7 +168,7 @@ export default function HomePage() {
               <Link href="/clinical" className="transition-colors hover:text-clinicalblue">
                 Clinical
               </Link>
-              <Link href="/bio" className="transition-colors hover:text-gold">
+              <Link href="/diligence" className="transition-colors hover:text-gold">
                 Diligence
               </Link>
             </nav>
@@ -328,7 +328,7 @@ export default function HomePage() {
                 </Link>
               </li>
               <li>
-                <Link href="/bio" className="transition-colors hover:text-gold">
+                <Link href="/diligence" className="transition-colors hover:text-gold">
                   Nexus Diligence
                 </Link>
               </li>

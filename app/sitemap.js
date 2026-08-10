@@ -25,7 +25,7 @@ export default function sitemap() {
       priority: 0.95,
     },
     {
-      url: `${baseUrl}/bio`,
+      url: `${baseUrl}/diligence`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.9,

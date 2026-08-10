@@ -19,7 +19,17 @@
       "Bash(/c/Users/ankit/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1.2-full_build/bin/ffmpeg.exe -y -i /c/Users/ankit/oai-nexus/public/audio/oai-nexus-ambient.m4a -ar 16000 -ac 1 -acodec pcm_s16le /c/Users/ankit/oai-nexus/public/audio/_speech_test.wav)",
       "Bash(curl -s -o /dev/null -w \"homepage: %{http_code}\\\\n\" http://localhost:3000)",
       "Bash(curl -s -o /dev/null -w \"mp3: %{http_code} type=%{content_type}\\\\n\" http://localhost:3000/audio/oai-nexus-ambient.mp3)",
-      "Bash(curl -s -o /dev/null -w \"m4a: %{http_code} type=%{content_type}\\\\n\" http://localhost:3000/audio/oai-nexus-ambient.m4a)"
+      "Bash(curl -s -o /dev/null -w \"m4a: %{http_code} type=%{content_type}\\\\n\" http://localhost:3000/audio/oai-nexus-ambient.m4a)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill //F //PID 46588)",
+      "Bash(disown)",
+      "Bash(ffprobe -v error -show_entries stream=codec_name,codec_type,width,height -of default=noprint_wrappers=1 public/videos/nexus-tools/patient.mov)",
+      "Bash(taskkill //F //PID 42724)",
+      "Bash(curl *)",
+      "Bash(taskkill //F //PID 23932)",
+      "Bash(taskkill //F //PID 37236)",
+      "Bash(taskkill //F //PID 22696)",
+      "Bash(taskkill //F //PID 43864)"
     ]
   }
 }
