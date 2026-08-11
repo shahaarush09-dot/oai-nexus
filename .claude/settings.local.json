@@ -31,7 +31,12 @@
       "Bash(taskkill //F //PID 22696)",
       "Bash(taskkill //F //PID 43864)",
       "Bash(taskkill //F //PID 27296)",
-      "Bash(taskkill //F //PID 32432)"
+      "Bash(taskkill //F //PID 32432)",
+      "Bash(taskkill //F //PID 15316)",
+      "Bash(taskkill //F //PID 42348)",
+      "Bash(nohup npm start)",
+      "Bash(taskkill //F //PID 38288)",
+      "Bash(taskkill //F //PID 30520)"
     ]
   }
 }

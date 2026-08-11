@@ -13,7 +13,21 @@ const EXIT_AUDIO_FADE_DELAY_MS = (ANIM_DURATION * 1000) - EXIT_AUDIO_FADE_MS;
 const FALLBACK_TIMEOUT_MS = 12000;
 const ERROR_FALLBACK_DELAY_MS = 1000;
 const SKIP_BUTTON_DELAY_MS = 3000;
-const CANPLAY_FORCE_TIMEOUT_MS = 500;
+// Diagnostic logging (mount, loadstart, canplay, play, playing, waiting,
+// stalled — timestamped relative to mount) confirmed this needed to move:
+// across every test run, `canplay` never fired before the old 500ms cap,
+// so that "rare backstop" was actually the trigger path 100% of the time —
+// forcing play() before any real buffer existed, which produces an
+// immediate 'waiting' stall. 4s gives canplay a real chance to fire
+// naturally (curl confirms the file itself serves in ~20ms, so a healthy
+// connection has no reason to need anywhere near this long) while still
+// backstopping a slow one well short of the 12s give-up below.
+const CANPLAY_FORCE_TIMEOUT_MS = 4000;
+// If playback starts and then stalls ('waiting' with no recovering
+// 'playing'), don't leave the frozen frame up for the remaining span of
+// the 12s give-up timer — bail to chat within a few seconds of the stall
+// instead.
+const STALL_BAILOUT_MS = 4000;
 
 // Full-screen video entrance/exit gate for the tool pages. Owns its own
 // lifecycle end to end (session-seen check, playback, fade out) and tells
@@ -31,18 +45,21 @@ export default function VideoEntranceOverlay({
   const [showSkip, setShowSkip] = useState(false);
   const videoRef = useRef(null);
   const timeoutRef = useRef(null);
+  const stallTimeoutRef = useRef(null);
   const exitStartedRef = useRef(false);
 
-  // The single funnel for every exit path — natural end, load error, and
-  // the 12s stall fallback all route through here, so "seen" only needs
-  // to be recorded in one place. Missing this on the timeout path was a
-  // real bug caught in testing: a video that never loads would otherwise
-  // never mark itself seen, and a user stuck behind a broken/slow video
-  // would re-eat the full 12s stall on every single page visit.
+  // The single funnel for every exit path — natural end, load error, the
+  // 12s stall fallback, and the stall-recovery bailout all route through
+  // here, so "seen" only needs to be recorded in one place. Missing this
+  // on the timeout path was a real bug caught in earlier testing: a video
+  // that never loads would otherwise never mark itself seen, and a user
+  // stuck behind a broken/slow video would re-eat the full stall on every
+  // single page visit.
   const triggerExit = useCallback(() => {
     if (exitStartedRef.current) return;
     exitStartedRef.current = true;
     clearTimeout(timeoutRef.current);
+    clearTimeout(stallTimeoutRef.current);
     markVideoSeen(storageKey);
     const el = videoRef.current;
     if (el) {
@@ -85,13 +102,10 @@ export default function VideoEntranceOverlay({
   // already cached and the video gets the connection to itself. Bare
   // autoplay lets the browser start as soon as it clears its own minimal
   // internal threshold, which under that contention can be just enough to
-  // start and then stall a second in once the initial buffer drains
-  // faster than it refills. Waiting for `canplay` (real signal: enough
-  // buffered to start) fixes the common case; the 500ms cap is only a
-  // "don't leave the screen blank" backstop for a genuinely slow
-  // connection; it isn't trying to prevent a stall on its own; the 12s
-  // FALLBACK_TIMEOUT_MS above already covers the case where the network
-  // truly can't keep up at all.
+  // start and then stall once the initial buffer drains faster than it
+  // refills. Waiting for `canplay` (real signal: enough buffered to
+  // start) fixes that; CANPLAY_FORCE_TIMEOUT_MS is only a "don't leave
+  // the screen blank forever" backstop, not the primary path.
   const attemptPlay = useCallback(() => {
     const el = videoRef.current;
     if (!el) return;
@@ -108,6 +122,19 @@ export default function VideoEntranceOverlay({
 
   function handleCanPlay() {
     attemptPlay();
+  }
+
+  // A stall that never recovers is exactly the freeze this was built to
+  // catch: 'waiting' starts a bailout timer, and only 'playing' (real
+  // frames rendering again) cancels it. If playback resumes on its own
+  // within STALL_BAILOUT_MS, the video continues normally toward 'ended'.
+  function handleWaiting() {
+    clearTimeout(stallTimeoutRef.current);
+    stallTimeoutRef.current = setTimeout(triggerExit, STALL_BAILOUT_MS);
+  }
+
+  function handlePlaying() {
+    clearTimeout(stallTimeoutRef.current);
   }
 
   function handleEnded() {
@@ -155,6 +182,8 @@ export default function VideoEntranceOverlay({
             controlsList="nofullscreen noremoteplayback"
             preload="auto"
             onCanPlay={handleCanPlay}
+            onPlaying={handlePlaying}
+            onWaiting={handleWaiting}
             onEnded={handleEnded}
             onError={handleError}
           />
