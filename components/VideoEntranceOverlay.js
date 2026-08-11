@@ -13,6 +13,7 @@ const EXIT_AUDIO_FADE_DELAY_MS = (ANIM_DURATION * 1000) - EXIT_AUDIO_FADE_MS;
 const FALLBACK_TIMEOUT_MS = 12000;
 const ERROR_FALLBACK_DELAY_MS = 1000;
 const SKIP_BUTTON_DELAY_MS = 3000;
+const CANPLAY_FORCE_TIMEOUT_MS = 500;
 
 // Full-screen video entrance/exit gate for the tool pages. Owns its own
 // lifecycle end to end (session-seen check, playback, fade out) and tells
@@ -77,6 +78,38 @@ export default function VideoEntranceOverlay({
     return () => clearTimeout(timer);
   }, [visible]);
 
+  // Playback start is driven explicitly rather than left to the bare
+  // `autoplay` attribute. A direct URL load (or a reload) has the video
+  // file competing on the network with the page's own JS/CSS/document —
+  // very different from a client-side route change, where those are
+  // already cached and the video gets the connection to itself. Bare
+  // autoplay lets the browser start as soon as it clears its own minimal
+  // internal threshold, which under that contention can be just enough to
+  // start and then stall a second in once the initial buffer drains
+  // faster than it refills. Waiting for `canplay` (real signal: enough
+  // buffered to start) fixes the common case; the 500ms cap is only a
+  // "don't leave the screen blank" backstop for a genuinely slow
+  // connection; it isn't trying to prevent a stall on its own; the 12s
+  // FALLBACK_TIMEOUT_MS above already covers the case where the network
+  // truly can't keep up at all.
+  const attemptPlay = useCallback(() => {
+    const el = videoRef.current;
+    if (!el) return;
+    el.play().catch((err) => {
+      console.error(`[VideoEntranceOverlay] play() rejected for ${videoFileName}`, err);
+    });
+  }, [videoFileName]);
+
+  useEffect(() => {
+    if (!visible) return;
+    const timer = setTimeout(attemptPlay, CANPLAY_FORCE_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, [visible, attemptPlay]);
+
+  function handleCanPlay() {
+    attemptPlay();
+  }
+
   function handleEnded() {
     triggerExit();
   }
@@ -102,6 +135,7 @@ export default function VideoEntranceOverlay({
     <AnimatePresence onExitComplete={() => onExitComplete?.({ skipped: false })}>
       {visible && (
         <motion.div
+          key="video"
           className="fixed inset-0 z-[1000] overflow-hidden bg-black"
           style={{ willChange: "transform, opacity" }}
           initial={{ opacity: 0, scale: 1.05 }}
@@ -115,12 +149,12 @@ export default function VideoEntranceOverlay({
             className="pointer-events-none h-full w-full object-cover"
             src={`/videos/nexus-tools/${videoFileName}`}
             aria-label={ariaLabel || `${videoFileName} entrance video`}
-            autoPlay
             muted
             playsInline
             disablePictureInPicture
             controlsList="nofullscreen noremoteplayback"
             preload="auto"
+            onCanPlay={handleCanPlay}
             onEnded={handleEnded}
             onError={handleError}
           />
@@ -133,6 +167,7 @@ export default function VideoEntranceOverlay({
         // fires (natural end, error, timeout, or this button itself)
         // instead of trailing along with the video's 600ms fade.
         <button
+          key="skip"
           type="button"
           onClick={triggerExit}
           aria-label="Skip video"
