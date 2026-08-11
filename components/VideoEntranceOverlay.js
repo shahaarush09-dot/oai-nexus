@@ -133,8 +133,18 @@ export default function VideoEntranceOverlay({
     stallTimeoutRef.current = setTimeout(triggerExit, STALL_BAILOUT_MS);
   }
 
+  // Unmuting used to be tied to the entrance animation finishing (a fixed
+  // 600ms timer) rather than to playback actually being real — meaning a
+  // stalled/frozen video could get unmuted anyway just because the timer
+  // elapsed. Tying it to 'playing' instead means audio only ever starts
+  // once frames are genuinely rendering, whether that happens quickly or
+  // only after the canplay/stall fallbacks above kick in.
   function handlePlaying() {
     clearTimeout(stallTimeoutRef.current);
+    const el = videoRef.current;
+    if (!el) return;
+    el.muted = false;
+    rampVolume(el, 0, 1, UNMUTE_FADE_MS);
   }
 
   function handleEnded() {
@@ -144,16 +154,6 @@ export default function VideoEntranceOverlay({
   function handleError(e) {
     console.error(`[VideoEntranceOverlay] failed to load ${videoFileName}`, e);
     setTimeout(triggerExit, ERROR_FALLBACK_DELAY_MS);
-  }
-
-  // Audio stays muted through the entrance animation so unmuting never
-  // collides with the scale/opacity pop — this fires once, when that
-  // animation's `animate` (not `exit`) transition resolves.
-  function handleEntranceComplete() {
-    const el = videoRef.current;
-    if (!el) return;
-    el.muted = false;
-    rampVolume(el, 0, 1, UNMUTE_FADE_MS);
   }
 
   if (!ready) return null;
@@ -169,7 +169,6 @@ export default function VideoEntranceOverlay({
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 1.05 }}
           transition={{ duration: ANIM_DURATION, ease: POP_EASE }}
-          onAnimationComplete={handleEntranceComplete}
         >
           <video
             ref={videoRef}
