@@ -2,14 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { rampVolume } from "@/lib/audioFade";
 import { hasSeenVideo, markVideoSeen } from "@/lib/videoSeen";
 
 const ANIM_DURATION = 0.6;
 const POP_EASE = [0.34, 1.56, 0.64, 1];
-const UNMUTE_FADE_MS = 200;
-const EXIT_AUDIO_FADE_MS = 300;
-const EXIT_AUDIO_FADE_DELAY_MS = (ANIM_DURATION * 1000) - EXIT_AUDIO_FADE_MS;
 const FALLBACK_TIMEOUT_MS = 12000;
 const ERROR_FALLBACK_DELAY_MS = 1000;
 const SKIP_BUTTON_DELAY_MS = 3000;
@@ -61,10 +57,6 @@ export default function VideoEntranceOverlay({
     clearTimeout(timeoutRef.current);
     clearTimeout(stallTimeoutRef.current);
     markVideoSeen(storageKey);
-    const el = videoRef.current;
-    if (el) {
-      setTimeout(() => rampVolume(el, el.volume, 0, EXIT_AUDIO_FADE_MS), EXIT_AUDIO_FADE_DELAY_MS);
-    }
     setVisible(false);
   }, [storageKey]);
 
@@ -133,18 +125,12 @@ export default function VideoEntranceOverlay({
     stallTimeoutRef.current = setTimeout(triggerExit, STALL_BAILOUT_MS);
   }
 
-  // Unmuting used to be tied to the entrance animation finishing (a fixed
-  // 600ms timer) rather than to playback actually being real — meaning a
-  // stalled/frozen video could get unmuted anyway just because the timer
-  // elapsed. Tying it to 'playing' instead means audio only ever starts
-  // once frames are genuinely rendering, whether that happens quickly or
-  // only after the canplay/stall fallbacks above kick in.
+  // Cancels the stall-recovery bailout below once real frames are
+  // rendering again. The video stays muted for its entire duration —
+  // audio isn't part of this experience — so this has nothing left to do
+  // beyond that.
   function handlePlaying() {
     clearTimeout(stallTimeoutRef.current);
-    const el = videoRef.current;
-    if (!el) return;
-    el.muted = false;
-    rampVolume(el, 0, 1, UNMUTE_FADE_MS);
   }
 
   function handleEnded() {
