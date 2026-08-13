@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import IntroSequence from "@/components/intelligence/IntroSequence";
 import TopSearchBar from "@/components/intelligence/TopSearchBar";
@@ -252,7 +253,18 @@ export default function IntelligencePageClient() {
           <div className="mx-auto max-w-7xl px-6 pt-5">
             <div className="flex flex-wrap items-center justify-between gap-6">
               <div>
-                <h1 className="font-serif text-xl font-medium">Nexus Intelligence</h1>
+                {/* Always present in the sticky header, same "← OAI Nexus"
+                    pattern the other three tools use — this page is deep,
+                    and someone 60,000 rows into Explore or several detail
+                    views in needs a way out that doesn't mean hitting Back
+                    repeatedly through their own navigation history. */}
+                <Link
+                  href="/"
+                  className="text-[11px] font-medium text-slate-500 transition-colors hover:text-teal"
+                >
+                  &larr; OAI Nexus
+                </Link>
+                <h1 className="mt-1.5 font-serif text-xl font-medium">Nexus Intelligence</h1>
                 <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.22em] text-slate-400">
                   Rare disease database explorer
                 </p>
@@ -383,13 +395,6 @@ export default function IntelligencePageClient() {
             </>
           )}
 
-          {/* Overview carries its own, more prominent recency badge, so
-              the footer line would just be saying it twice. */}
-          {stats?.lastUpdated && tab !== "overview" && (
-            <p className="mt-16 border-t border-navy-border pt-5 text-xs font-light text-slate-500">
-              Data last updated {stats.lastUpdated}
-            </p>
-          )}
         </div>
       </motion.main>
 

@@ -65,7 +65,9 @@
       "Bash(npx next *)",
       "Bash(grep -n \"href=\\\\\"/\\\\\\(patient\\\\|clinical\\\\|diligence\\\\\\)\" components/home/Header.js)",
       "Bash(git rm *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git reset *)",
+      "Bash(git commit -q -m ' *)"
     ]
   }
 }
