@@ -11,6 +11,7 @@ export default function DetailShell({
   onBack,
   backLabel,
   onBuildView,
+  onAskNexus,
   children,
 }) {
   return (
@@ -30,16 +31,28 @@ export default function DetailShell({
           </p>
           <h2 className="mt-2 font-serif text-3xl font-medium text-white">{title}</h2>
         </div>
-        {/* Hands off to the Explore tab pre-filtered to this entity, so a
-            custom view starts from where the user already is rather than
-            from an empty filter panel. */}
-        <button
-          type="button"
-          onClick={() => onBuildView(title)}
-          className="rounded border border-navy-border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-slate-400 transition-colors hover:border-teal/40 hover:text-teal"
-        >
-          Build a custom view from here
-        </button>
+        {/* The two things you can do with the record you're looking at:
+            widen it into a custom view, or ask what's happened to it
+            recently. Stacked below sm so a long entity name doesn't
+            squeeze them into unreadable slivers on a phone. */}
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-start">
+          <button
+            type="button"
+            onClick={() => onBuildView(title)}
+            className="rounded border border-navy-border px-3 py-2 text-center font-mono text-[10px] uppercase tracking-[0.16em] text-slate-400 transition-colors hover:border-teal/40 hover:text-teal"
+          >
+            Build a custom view from here
+          </button>
+          {onAskNexus && (
+            <button
+              type="button"
+              onClick={(e) => onAskNexus(e.currentTarget)}
+              className="rounded border border-navy-border px-3 py-2 text-center font-mono text-[10px] uppercase tracking-[0.16em] text-slate-400 transition-colors hover:border-teal/40 hover:text-teal"
+            >
+              Ask Nexus
+            </button>
+          )}
+        </div>
       </div>
 
       {facts?.length > 0 && (

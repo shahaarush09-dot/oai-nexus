@@ -85,6 +85,7 @@ function CompanyDetail({ company, onBack, onNavigate, onBuildView }) {
       facts={facts}
       onBack={onBack}
       onBuildView={onBuildView}
+      onAskNexus={(el) => openAsk("company", company.companyName, el)}
       backLabel="All companies"
     >
       {loading || error ? (

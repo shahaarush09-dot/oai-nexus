@@ -85,6 +85,7 @@ function DiseaseDetail({ disease, onBack, onNavigate, onBuildView }) {
       facts={facts}
       onBack={onBack}
       onBuildView={onBuildView}
+      onAskNexus={(el) => openAsk("disease", disease.diseaseName, el)}
       backLabel="All diseases"
     >
       {disease.description && (

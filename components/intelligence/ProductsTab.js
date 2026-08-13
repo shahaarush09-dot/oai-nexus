@@ -90,6 +90,7 @@ function ProductDetail({ product, onBack, onNavigate, onBuildView }) {
       facts={facts}
       onBack={onBack}
       onBuildView={onBuildView}
+      onAskNexus={(el) => openAsk("drug", product.productName, el)}
       backLabel="All products"
     >
       {loading || error ? (
