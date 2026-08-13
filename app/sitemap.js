@@ -13,6 +13,12 @@ export default function sitemap() {
       priority: 1.0,
     },
     {
+      url: `${baseUrl}/intelligence`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.95,
+    },
+    {
       url: `${baseUrl}/patient`,
       lastModified: new Date(),
       changeFrequency: "weekly",

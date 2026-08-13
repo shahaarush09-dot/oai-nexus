@@ -1,5 +1,4 @@
 import BioPageClient from "@/components/bio/BioPageClient";
-import ToolVideoGate from "@/components/ToolVideoGate";
 
 export const metadata = {
   title: "Nexus Diligence | Orphan Drug Evaluator",
@@ -50,13 +49,7 @@ export default function DiligencePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(diligenceAppSchema) }}
       />
-      <ToolVideoGate
-        videoFileName="diligence.mp4"
-        storageKey="tool-diligence-video-seen"
-        ariaLabel="Nexus Diligence introduction video"
-      >
-        <BioPageClient />
-      </ToolVideoGate>
+      <BioPageClient />
     </>
   );
 }

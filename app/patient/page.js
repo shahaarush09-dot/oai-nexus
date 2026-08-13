@@ -1,6 +1,5 @@
 import Link from "next/link";
 import ChatInterface from "@/components/ChatInterface";
-import ToolVideoGate from "@/components/ToolVideoGate";
 
 export const metadata = {
   title: "Patient Nexus | Rare Disease Education AI",
@@ -52,27 +51,22 @@ const examples = [
 ];
 
 const theme = {
-  userBubble: "bg-teal",
-  aiWash: "bg-teal/10",
-  aiBorder: "border-teal/20",
-  ring: "focus-within:border-teal focus-within:ring-2 focus-within:ring-teal/30",
-  sendBg: "bg-teal hover:bg-teal-dark",
-  chipHover: "hover:border-teal/40 hover:bg-teal/5 hover:text-teal",
+  userBubble: "bg-sage",
+  aiWash: "bg-sage/10",
+  aiBorder: "border-sage/20",
+  ring: "focus-within:border-sage focus-within:ring-2 focus-within:ring-sage/30",
+  sendBg: "bg-sage hover:bg-sage-dark",
+  chipHover: "hover:border-sage/40 hover:bg-sage/5 hover:text-sage",
 };
 
 export default function PatientPage() {
   return (
-    <div className="min-h-screen border-t-4 border-teal bg-white text-slate-800">
+    <div className="min-h-screen border-t-4 border-sage bg-white text-slate-800">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(patientAppSchema) }}
       />
-      <ToolVideoGate
-        videoFileName="patient.mp4"
-        storageKey="tool-patient-video-seen"
-        ariaLabel="Patient Nexus introduction video"
-      >
-        <div className="mx-auto max-w-3xl px-6 py-10">
+      <div className="mx-auto max-w-3xl px-6 py-10">
           <Link href="/" className="text-sm text-slate-400 hover:text-slate-600">
             &larr; OAI Nexus
           </Link>
@@ -93,8 +87,7 @@ export default function PatientPage() {
               disclaimer="Nexus provides educational information only. It does not diagnose or treat, and does not replace advice from a qualified physician."
             />
           </div>
-        </div>
-      </ToolVideoGate>
+      </div>
     </div>
   );
 }

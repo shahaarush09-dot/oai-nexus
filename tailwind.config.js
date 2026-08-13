@@ -22,6 +22,12 @@ module.exports = {
           DEFAULT: "#2a9d8f",
           dark: "#218074",
         },
+        // Patient Nexus. Distinct from Intelligence's teal so the two
+        // read as complementary rather than as the same tool twice.
+        sage: {
+          DEFAULT: "#7fa676",
+          dark: "#5f8257",
+        },
         gold: {
           DEFAULT: "#c8a24a",
           dark: "#a9873c",

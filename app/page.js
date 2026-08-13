@@ -9,7 +9,7 @@ const faqs = [
   {
     question: "What is OAI Nexus?",
     answer:
-      "OAI Nexus is the first AI platform built specifically for rare disease. It has three modules: Patient Nexus for patient education, Clinical Nexus for research, and Nexus Diligence for drug evaluation.",
+      "OAI Nexus is the first AI platform built specifically for rare disease. It has four modules: Nexus Intelligence, a searchable map of rare diseases, companies, and products in development; Patient Nexus for patient education; Clinical Nexus for research; and Nexus Diligence for drug evaluation.",
   },
   {
     question: "Is OAI Nexus the first rare disease AI platform?",
@@ -19,12 +19,12 @@ const faqs = [
   {
     question: "Who is OAI Nexus for?",
     answer:
-      "OAI Nexus serves three audiences: patients and families seeking rare disease education, physicians and researchers needing clinical evidence, and biotech investors and professionals evaluating orphan drugs.",
+      "OAI Nexus serves patients and families seeking rare disease education, physicians and researchers needing clinical evidence, and biotech investors and professionals evaluating orphan drugs. Nexus Intelligence serves all three by making the underlying landscape searchable.",
   },
   {
-    question: "What are the three modules of OAI Nexus?",
+    question: "What are the four modules of OAI Nexus?",
     answer:
-      "Patient Nexus is for patient education, Clinical Nexus is for research professionals, and Nexus Diligence is for biotech and investment due diligence on orphan drugs.",
+      "Nexus Intelligence is a browsable database of rare diseases, companies, and products in development. Patient Nexus is for patient education, Clinical Nexus is for research professionals, and Nexus Diligence is for biotech and investment due diligence on orphan drugs.",
   },
   {
     question: "Is OAI Nexus free to use?",
@@ -74,18 +74,39 @@ const stats = [
   },
 ];
 
+// Intelligence sits first because it's the entry point to the others: the
+// dataset is what the three assistants reason about. Position alone does
+// the signalling — no size bump or badge, which together would read as
+// three separate claims to importance.
 const modules = [
   {
     n: "01",
-    href: "/patient",
-    name: "Patient Nexus",
+    href: "/intelligence",
+    name: "Nexus Intelligence",
     short:
-      "Educational support for patients and families navigating a rare disease diagnosis.",
+      "Search 11,645 rare diseases, 7,851 companies, and 23,883 products in development.",
     dot: "bg-teal",
     text: "text-teal",
     border: "hover:border-teal/50",
     ring: "group-hover:border-teal/50",
     glow: "rgba(42,157,143,0.35)",
+    headline:
+      "For anyone who wants to see the whole rare disease landscape at once, not one answer at a time.",
+    who: "Researchers, investors, clinicians, and patient advocates who want to explore what exists across rare disease rather than ask a single question about it.",
+    what: "Rare disease data is scattered across Orphanet, FDA orphan designations, Drugs@FDA, and ClinicalTrials.gov, and none of those talk to each other. Nexus Intelligence joins them into one browsable map of 63,433 disease-company-product links you can filter, group, and export however you want. Every row carries the source and match confidence it came from, so you can see exactly where a claim originates rather than taking it on faith.",
+    cta: "Enter Nexus Intelligence",
+  },
+  {
+    n: "02",
+    href: "/patient",
+    name: "Patient Nexus",
+    short:
+      "Educational support for patients and families navigating a rare disease diagnosis.",
+    dot: "bg-sage",
+    text: "text-sage",
+    border: "hover:border-sage/50",
+    ring: "group-hover:border-sage/50",
+    glow: "rgba(127,166,118,0.35)",
     headline:
       "For patients and families who need a diagnosis explained like a person would explain it.",
     who: "Patients and families who need a rare disease explained in language they can actually understand — without a wall of jargon.",
@@ -93,7 +114,7 @@ const modules = [
     cta: "Enter Patient Nexus",
   },
   {
-    n: "02",
+    n: "03",
     href: "/clinical",
     name: "Clinical Nexus",
     short:
@@ -110,7 +131,7 @@ const modules = [
     cta: "Enter Clinical Nexus",
   },
   {
-    n: "03",
+    n: "04",
     href: "/diligence",
     name: "Nexus Diligence",
     short: "Structured, investor-grade diligence on orphan drug candidates.",
@@ -162,7 +183,10 @@ export default function HomePage() {
           </span>
           <div className="flex items-center gap-6">
             <nav className="hidden gap-6 text-xs font-medium uppercase tracking-widest text-slate-400 sm:flex">
-              <Link href="/patient" className="transition-colors hover:text-teal">
+              <Link href="/intelligence" className="transition-colors hover:text-teal">
+                Intelligence
+              </Link>
+              <Link href="/patient" className="transition-colors hover:text-sage">
                 Patient
               </Link>
               <Link href="/clinical" className="transition-colors hover:text-clinicalblue">
@@ -225,7 +249,9 @@ export default function HomePage() {
               grounded differently for the person using it — but each draws
               on the same underlying understanding of the disease in
               question, so the ecosystem moves together instead of in three
-              disconnected directions.
+              disconnected directions. Nexus Intelligence sits underneath all
+              three: the structured map of which diseases, companies, and
+              products actually exist, and how they connect.
             </p>
           </Reveal>
 
@@ -318,7 +344,12 @@ export default function HomePage() {
                 </Link>
               </li>
               <li>
-                <Link href="/patient" className="transition-colors hover:text-teal">
+                <Link href="/intelligence" className="transition-colors hover:text-teal">
+                  Nexus Intelligence
+                </Link>
+              </li>
+              <li>
+                <Link href="/patient" className="transition-colors hover:text-sage">
                   Patient Nexus
                 </Link>
               </li>

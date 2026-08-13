@@ -1,6 +1,5 @@
 import Link from "next/link";
 import ChatInterface from "@/components/ChatInterface";
-import ToolVideoGate from "@/components/ToolVideoGate";
 
 export const metadata = {
   title: "Clinical Nexus | Rare Disease Research Copilot",
@@ -68,12 +67,7 @@ export default function ClinicalPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(clinicalAppSchema) }}
       />
-      <ToolVideoGate
-        videoFileName="clinical.mp4"
-        storageKey="tool-clinical-video-seen"
-        ariaLabel="Clinical Nexus introduction video"
-      >
-        <div className="mx-auto max-w-3xl px-6 py-10">
+      <div className="mx-auto max-w-3xl px-6 py-10">
           <Link href="/" className="text-sm text-slate-400 hover:text-slate-600">
             &larr; OAI Nexus
           </Link>
@@ -94,8 +88,7 @@ export default function ClinicalPage() {
               disclaimer="Designed for physicians, researchers, and students. Responses are summaries for research purposes and should be verified against primary literature."
             />
           </div>
-        </div>
-      </ToolVideoGate>
+      </div>
     </div>
   );
 }

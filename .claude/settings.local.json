@@ -40,7 +40,32 @@
       "Bash(taskkill //F //PID 27100)",
       "Bash(taskkill //F //PID 27552)",
       "Bash(taskkill //F //PID 22416)",
-      "Bash(taskkill //F //PID 35248)"
+      "Bash(taskkill //F //PID 35248)",
+      "Bash(python3 -c \"import pandas, openpyxl; print\\('pandas', pandas.__version__, 'openpyxl', openpyxl.__version__\\)\")",
+      "Bash(python -c \"import pandas, openpyxl; print\\('pandas', pandas.__version__, 'openpyxl', openpyxl.__version__\\)\")",
+      "Bash(pip --version)",
+      "Read(//c/Users/ankit/**)",
+      "Bash(.venv/Scripts/python.exe -c ' *)",
+      "Bash(\".venv/Scripts/python.exe\" scripts/06_export_to_json.py)",
+      "Bash(gzip -c \"/c/Users/ankit/OneDrive/Documents/rare-disease-database/output/json/map.json\")",
+      "Bash(cp \"/c/Users/ankit/OneDrive/Documents/rare-disease-database/output/json/diseases.json\" /c/Users/ankit/oai-nexus/public/data/)",
+      "Bash(cp \"/c/Users/ankit/OneDrive/Documents/rare-disease-database/output/json/companies.json\" /c/Users/ankit/oai-nexus/public/data/)",
+      "Bash(cp \"/c/Users/ankit/OneDrive/Documents/rare-disease-database/output/json/products.json\" /c/Users/ankit/oai-nexus/public/data/)",
+      "Bash(cp \"/c/Users/ankit/OneDrive/Documents/rare-disease-database/output/json/map.json\" /c/Users/ankit/oai-nexus/public/data/)",
+      "Bash(cp \"/c/Users/ankit/OneDrive/Documents/rare-disease-database/output/json/metadata.json\" /c/Users/ankit/oai-nexus/public/data/)",
+      "Bash(python -c ' *)",
+      "Bash(awk '{print $5, $9}')",
+      "Bash(npm install *)",
+      "Bash(python -)",
+      "Bash(grep -vE \":\\\\s*//\")",
+      "Bash(python -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('cached:',d.get\\('cached'\\),'| overview starts:',d['overview'][:60]\\)\")",
+      "Bash(python -m json.tool)",
+      "Read(//tmp/**)",
+      "Bash(rm -f /tmp/askn_body)",
+      "Bash(npx next *)",
+      "Bash(grep -n \"href=\\\\\"/\\\\\\(patient\\\\|clinical\\\\|diligence\\\\\\)\" components/home/Header.js)",
+      "Bash(git rm *)",
+      "Bash(git add *)"
     ]
   }
 }
