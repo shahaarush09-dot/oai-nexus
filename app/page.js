@@ -84,7 +84,7 @@ const modules = [
     href: "/intelligence",
     name: "Nexus Intelligence",
     short:
-      "Search 11,645 rare diseases, 7,851 companies, and 23,883 products in development.",
+      "Search 11,645 rare diseases, the 7,851 companies working on them, and 23,883 products in development.",
     dot: "bg-teal",
     text: "text-teal",
     border: "hover:border-teal/50",
@@ -250,7 +250,7 @@ export default function HomePage() {
               on the same underlying understanding of the disease in
               question, so the ecosystem moves together instead of in three
               disconnected directions. Nexus Intelligence sits underneath all
-              three: the structured map of which diseases, companies, and
+              three: the structured map of which rare diseases, companies, and
               products actually exist, and how they connect.
             </p>
           </Reveal>

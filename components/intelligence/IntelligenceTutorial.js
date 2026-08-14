@@ -18,8 +18,8 @@ const STEPS = [
   },
   {
     target: '[data-tour="tab-diseases"]',
-    title: "Open a full profile",
-    body: "Click into any result to see its full profile: linked companies, products in development, and how mature the pipeline is.",
+    title: "Open a profile",
+    body: "Click into any result to see its profile: linked companies, rare disease products in development, and how mature that pipeline is.",
   },
   {
     target: '[data-tour="tab-explore"]',

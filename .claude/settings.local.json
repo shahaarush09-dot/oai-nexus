@@ -67,7 +67,11 @@
       "Bash(git rm *)",
       "Bash(git add *)",
       "Bash(git reset *)",
-      "Bash(git commit -q -m ' *)"
+      "Bash(git commit -q -m ' *)",
+      "Bash(powershell -Command \"Get-CimInstance Win32_Process -Filter 'ProcessId=18812' | Select-Object -ExpandProperty CommandLine\")",
+      "Bash(powershell -Command '$p=Get-CimInstance Win32_Process -Filter '\\\\''ProcessId=18812'\\\\''; Get-CimInstance Win32_Process -Filter \\(\"ProcessId=\"+$p.ParentProcessId\\) | Select-Object ProcessId,Name,CommandLine | Format-List')",
+      "Bash(powershell -Command \"Stop-Process -Id 18812 -Force -ErrorAction SilentlyContinue; Stop-Process -Id 13420 -Force -ErrorAction SilentlyContinue; Start-Sleep -Seconds 2; if \\(Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue\\) { 'still listening' } else { 'port 3000 free' }\")",
+      "Bash(npx --no-install next build)"
     ]
   }
 }

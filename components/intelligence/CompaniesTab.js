@@ -57,9 +57,16 @@ function CompanyDetail({ company, onBack, onNavigate, onBuildView }) {
   // The export carries no ticker or public/private flag, so the plan's
   // "public company" badge has nothing to render from. These are the
   // fields that do exist.
+  // Every count here is scoped to the rare disease dataset, so the labels
+  // say so. A large sponsor works on far more than what appears below,
+  // and a bare "Products: 12" invites the reader to assume that is the
+  // company's whole pipeline rather than its orphan-indication slice.
   const facts = [
-    { label: "Diseases", value: company.diseaseCount?.toLocaleString("en-US") },
-    { label: "Products", value: company.productCount?.toLocaleString("en-US") },
+    { label: "Rare diseases", value: company.diseaseCount?.toLocaleString("en-US") },
+    {
+      label: "Rare disease products",
+      value: company.productCount?.toLocaleString("en-US"),
+    },
     { label: "Map links", value: company.linkCount?.toLocaleString("en-US") },
     { label: "Clinical trials", value: company.trialCount?.toLocaleString("en-US") },
     {
@@ -92,10 +99,10 @@ function CompanyDetail({ company, onBack, onNavigate, onBuildView }) {
         <MapLoading error={error} />
       ) : (
         <>
-          <Section title="Diseases this company works on" count={diseases.length}>
+          <Section title="Rare diseases this company works on" count={diseases.length}>
             <DataTable
               rows={diseases}
-              emptyMessage="No diseases linked to this company."
+              emptyMessage="No rare diseases linked to this company."
               columns={[
                 {
                   key: "name",
@@ -120,10 +127,13 @@ function CompanyDetail({ company, onBack, onNavigate, onBuildView }) {
             />
           </Section>
 
-          <Section title="Products this company makes" count={products.length}>
+          {/* Not "products this company makes": most of these are in
+              development rather than on the market, and the list only ever
+              covers orphan indications. */}
+          <Section title="Rare disease products from this company" count={products.length}>
             <DataTable
               rows={products}
-              emptyMessage="No products linked to this company."
+              emptyMessage="No rare disease products linked to this company."
               columns={[
                 {
                   key: "name",

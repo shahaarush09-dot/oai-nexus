@@ -8,9 +8,9 @@ const n = (value) => value.toLocaleString("en-US");
 
 export const metadata = {
   title: "Nexus Intelligence | Rare Disease Database Explorer",
-  description: `Search and filter ${n(stats.diseaseCount)} rare diseases, ${n(
+  description: `Search and filter ${n(stats.diseaseCount)} rare diseases, the ${n(
     stats.companyCount
-  )} companies, and ${n(
+  )} companies working on them, and ${n(
     stats.productCount
   )} products in development. Built from FDA orphan drug designations, Drugs@FDA, and ClinicalTrials.gov.`,
   keywords: [
@@ -33,9 +33,9 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Nexus Intelligence | Rare Disease Database Explorer",
-    description: `Search ${n(stats.diseaseCount)} rare diseases, ${n(
+    description: `Search ${n(stats.diseaseCount)} rare diseases, the ${n(
       stats.companyCount
-    )} companies, and ${n(stats.productCount)} products in development.`,
+    )} companies working on them, and ${n(stats.productCount)} products in development.`,
   },
 };
 

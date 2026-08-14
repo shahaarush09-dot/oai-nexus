@@ -18,7 +18,7 @@ const CARDS = [
     mode: "company",
     name: "Search by Company",
     blurb:
-      "Every disease a company works on and every product it has in development, from preclinical to approved.",
+      "The rare diseases a company works on and the rare disease products it has in development, from preclinical to approved.",
   },
   {
     mode: "drug",
@@ -44,7 +44,7 @@ function format(n) {
 const HOW_TO = [
   {
     heading: "Browse by disease, company, or product",
-    body: "Search for anything using the bar at the top, and switch between drugs, diseases, and companies with one click. Open any result to see its full profile: who is working on it, what they have in development, and how far along the pipeline is.",
+    body: "Search for anything using the bar at the top, and switch between drugs, diseases, and companies with one click. Open any result to see its profile: who is working on it, what they have in rare disease development, and how far along that pipeline is.",
   },
   {
     heading: "Build the view you actually want",

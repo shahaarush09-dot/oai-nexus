@@ -191,7 +191,7 @@ function ResultMeta({ mode, item }) {
     mode === "disease"
       ? item.category
       : mode === "company"
-      ? `${item.productCount?.toLocaleString("en-US") ?? 0} products`
+      ? `${item.productCount?.toLocaleString("en-US") ?? 0} rare disease products`
       : item.developmentStage;
   if (!text) return null;
   return (

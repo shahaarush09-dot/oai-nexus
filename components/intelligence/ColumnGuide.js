@@ -62,7 +62,7 @@ export default function ColumnGuide() {
             ))}
           </dl>
           <p className="mt-4 border-t border-navy-border pt-3 text-[11px] font-light leading-relaxed text-slate-500">
-            Every row is a link between one disease, one company, and one
+            Every row is a link between one rare disease, one company, and one
             product, drawn from a named source. A disease with many sponsors
             and many products produces many rows, so row counts measure
             links, not distinct drugs.
