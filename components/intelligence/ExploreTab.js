@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import FilterPanel from "@/components/intelligence/FilterPanel";
 import ActiveFilterChips from "@/components/intelligence/ActiveFilterChips";
 import ColumnMenu from "@/components/intelligence/ColumnMenu";
@@ -18,6 +18,7 @@ import {
   GROUP_BY_OPTIONS,
   toCsv,
 } from "@/lib/exploreFilters";
+import { track, trackOnce } from "@/lib/trackIntelligence";
 
 const TEXT_DEBOUNCE_MS = 150;
 
@@ -70,6 +71,12 @@ export default function ExploreTab({ onNavigate, initialFilters, initialView, on
     return () => clearTimeout(timer);
   }, [filters.text]);
 
+  // Explore mounts only when the tab is first opened (see the mounted-but-
+  // hidden gate in IntelligencePageClient), so mount is the open event.
+  useEffect(() => {
+    trackOnce("explore_open");
+  }, []);
+
   // Publishes the view upward so the page can mirror it into the URL.
   // Debounced text is deliberately not used here — the URL should reflect
   // what's typed, not lag a beat behind it.
@@ -92,6 +99,25 @@ export default function ExploreTab({ onNavigate, initialFilters, initialView, on
     if (!map || !haystack) return [];
     return applyFilters(map.rows, haystack, { ...filters, text: debouncedText });
   }, [map, haystack, filters, debouncedText]);
+
+  // One filter_applied per settled change. Skips the first run so simply
+  // opening the tab isn't counted as applying a filter, and keys off the
+  // debounced text so a typed query records once rather than per keystroke.
+  //
+  // filtered.length is read through a ref rather than listed as a
+  // dependency on purpose: it changes from 0 to 63,433 when map.json
+  // finishes loading, which would otherwise fire a phantom
+  // "filter_applied: 63433" before the user has touched a single control.
+  const resultCountRef = useRef(0);
+  resultCountRef.current = filtered.length;
+  const filtersSettledRef = useRef(false);
+  useEffect(() => {
+    if (!filtersSettledRef.current) {
+      filtersSettledRef.current = true;
+      return;
+    }
+    track("filter_applied", { resultCount: resultCountRef.current });
+  }, [filters, debouncedText]);
 
   // Drives the count on the mobile Filters button, so a collapsed panel
   // still says how much is being filtered out.
@@ -129,6 +155,7 @@ export default function ExploreTab({ onNavigate, initialFilters, initialView, on
     const cols = EXPLORE_COLUMNS.filter((c) => visible.includes(c.accessor));
     const csv = toCsv(filtered, cols, groupBy);
     downloadCsv(csv, `nexus-intelligence-${Date.now()}.csv`);
+    track("csv_export", { rowCount: filtered.length });
     setExportNote(`${filtered.length.toLocaleString("en-US")} rows exported`);
   }
 

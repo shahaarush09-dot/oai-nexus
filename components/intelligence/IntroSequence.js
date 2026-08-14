@@ -58,6 +58,34 @@ function format(n) {
   return typeof n === "number" ? n.toLocaleString("en-US") : "—";
 }
 
+// Whether the intro has already run, tracked in two places on purpose.
+//
+// sessionStorage is the durable record across route changes, but it throws
+// in private browsing and under blocked-storage settings — and that failure
+// is silent, so the flag simply never persists and every remount replays
+// the intro with no way out but a refresh. The module-scoped latch closes
+// that: it survives any remount within a single page load regardless of
+// whether storage works at all.
+let playedThisPageLoad = false;
+
+function hasPlayed() {
+  if (playedThisPageLoad) return true;
+  try {
+    return sessionStorage.getItem(SESSION_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
+
+function markPlayed() {
+  playedThisPageLoad = true;
+  try {
+    sessionStorage.setItem(SESSION_KEY, "true");
+  } catch {
+    // Storage blocked — the latch above still prevents a replay this load.
+  }
+}
+
 // The 5-second animated stat reveal that opens /intelligence (System 0).
 // Self-contained: it fetches only metadata.json, so it starts animating
 // while the multi-megabyte dataset JSON loads in parallel behind it, and
@@ -70,6 +98,11 @@ export default function IntroSequence({ onComplete }) {
   const [beat, setBeat] = useState(0);
   const [showSkip, setShowSkip] = useState(false);
   const finishedRef = useRef(false);
+  // True once this particular instance has begun animating. Distinguishes
+  // "mid-play, keep rendering" from "fresh instance that should never
+  // render at all" — the render guard below needs that difference so it
+  // doesn't cut off the exit animation.
+  const startedRef = useRef(false);
 
   // Single funnel for every ending — natural completion, the skip button,
   // a reduced-motion bypass, an already-seen session, and the metadata
@@ -79,11 +112,7 @@ export default function IntroSequence({ onComplete }) {
     (instant) => {
       if (finishedRef.current) return;
       finishedRef.current = true;
-      try {
-        sessionStorage.setItem(SESSION_KEY, "true");
-      } catch {
-        // ignore — worst case the intro replays next load
-      }
+      markPlayed();
       if (instant) {
         setPhase("done");
         onComplete?.({ skipped: true });
@@ -99,12 +128,7 @@ export default function IntroSequence({ onComplete }) {
   );
 
   useEffect(() => {
-    let alreadySeen = false;
-    try {
-      alreadySeen = sessionStorage.getItem(SESSION_KEY) === "true";
-    } catch {
-      // sessionStorage unavailable (private mode etc.) — treat as not seen
-    }
+    const alreadySeen = hasPlayed();
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (alreadySeen || reduceMotion) {
@@ -144,6 +168,8 @@ export default function IntroSequence({ onComplete }) {
   // slow frame can't compound drift across five beats.
   useEffect(() => {
     if (!stats || finishedRef.current) return;
+    startedRef.current = true;
+    markPlayed();
     setPhase("beats");
     const timers = BEATS.slice(1).map((_, i) =>
       setTimeout(() => setBeat(i + 1), (i + 1) * BEAT_MS)
@@ -166,6 +192,12 @@ export default function IntroSequence({ onComplete }) {
       document.body.style.overflow = previous;
     };
   }, [phase]);
+
+  // A fresh instance that finds the intro already played renders nothing,
+  // ever — not even for the frame before its mount effect runs. Scoped to
+  // instances that never started so an in-flight sequence still gets to
+  // finish its exit animation, since markPlayed() fires when it begins.
+  if (!startedRef.current && hasPlayed()) return null;
 
   if (phase === "done" || !stats) return null;
 

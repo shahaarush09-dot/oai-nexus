@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { SEARCH_MODES } from "@/lib/fuzzySearch";
 import { useEntitySearch, useListKeyboard } from "@/components/intelligence/useEntitySearch";
+import { track } from "@/lib/trackIntelligence";
 
 const MODE_ORDER = ["drug", "disease", "company"];
 
@@ -23,6 +24,12 @@ export default function TopSearchBar({ mode, onModeChange, data, onSelect, focus
   const { results } = useEntitySearch(mode, records, query);
 
   function choose(item) {
+    // The chosen name is safe to record — it can only be a value already
+    // published in the dataset, never whatever was typed.
+    track("search_select", {
+      mode,
+      entity: item[modeConfig.nameField],
+    });
     setQuery("");
     setOpen(false);
     inputRef.current?.blur();
@@ -32,6 +39,16 @@ export default function TopSearchBar({ mode, onModeChange, data, onSelect, focus
   const { active, setActive, onKeyDown } = useListKeyboard(results, choose, () =>
     setOpen(false)
   );
+
+  // One `search` event per completed query rather than per keystroke —
+  // 500ms is longer than the 150ms result debounce on purpose, so typing
+  // "cdkl5" records one search and not five. Only the mode is recorded;
+  // the typed string is never sent.
+  useEffect(() => {
+    if (query.trim().length < 2) return;
+    const timer = setTimeout(() => track("search", { mode }), 500);
+    return () => clearTimeout(timer);
+  }, [query, mode]);
 
   // The Overview cards focus this input by bumping a token rather than
   // reaching in through a ref, which keeps the parent from needing a

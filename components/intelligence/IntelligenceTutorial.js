@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
+import { track } from "@/lib/trackIntelligence";
 
 export const TUTORIAL_KEY = "intelligence-tutorial-completed";
 
@@ -40,6 +41,17 @@ export default function IntelligenceTutorial({ onClose }) {
   const [rect, setRect] = useState(null);
   const done = step >= STEPS.length;
 
+  // Both endings call onClose, so the outcome has to be recorded here —
+  // "reached the end" and "bailed at step 2" are the whole point of
+  // tracking a tutorial.
+  const finish = useCallback(
+    (outcome) => {
+      track("tutorial_finished", { outcome });
+      onClose();
+    },
+    [onClose]
+  );
+
   const measure = useCallback(() => {
     if (done) return setRect(null);
     const sel = STEPS[step].target;
@@ -68,11 +80,11 @@ export default function IntelligenceTutorial({ onClose }) {
 
   useEffect(() => {
     function onKey(e) {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") finish("skipped");
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
+  }, [finish]);
 
   // Callout placement: below the highlighted element when there's room,
   // above it when there isn't, centered when there's no target at all.
@@ -131,7 +143,7 @@ export default function IntelligenceTutorial({ onClose }) {
             </p>
             <button
               type="button"
-              onClick={onClose}
+              onClick={() => finish("completed")}
               className="mt-4 w-full rounded border border-teal/40 bg-teal/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-teal transition-colors hover:border-teal hover:bg-teal/20"
             >
               Start exploring
@@ -145,7 +157,7 @@ export default function IntelligenceTutorial({ onClose }) {
               </p>
               <button
                 type="button"
-                onClick={onClose}
+                onClick={() => finish("skipped")}
                 className="font-mono text-[9px] uppercase tracking-[0.16em] text-slate-500 transition-colors hover:text-teal"
               >
                 Skip tour

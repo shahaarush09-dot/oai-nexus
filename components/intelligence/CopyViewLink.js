@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { track } from "@/lib/trackIntelligence";
 
 // Makes the URL-synced view discoverable.
 //
@@ -20,6 +21,7 @@ export default function CopyViewLink({ rowCount }) {
   }, [state]);
 
   async function copy() {
+    track("view_shared");
     const url = window.location.href;
     try {
       await navigator.clipboard.writeText(url);

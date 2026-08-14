@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { login, signOut } from "./actions";
 import { sessionToken, SESSION_COOKIE } from "@/lib/adminAuth";
-import { fetchStats } from "@/lib/adminStats";
+import { fetchStats, fetchIntelligenceStats } from "@/lib/adminStats";
 import StatsChart from "@/components/admin/StatsChart";
 import RefreshButton from "@/components/admin/RefreshButton";
 
@@ -88,6 +88,17 @@ export default async function AdminStatsPage({ searchParams }) {
     dbError = "Database connection failed. Check environment variables and try again.";
   }
 
+  // Fetched separately and allowed to fail on its own: Intelligence
+  // analytics are newer than the chat-tool ones, and a problem reading them
+  // shouldn't blank out the three modules that have been reporting for
+  // months.
+  let intel = null;
+  try {
+    intel = await fetchIntelligenceStats();
+  } catch (err) {
+    console.error("[admin/stats] Intelligence query failed:", err);
+  }
+
   const refreshedAt = new Date();
 
   return (
@@ -146,10 +157,117 @@ export default async function AdminStatsPage({ searchParams }) {
           </>
         )}
 
+        {intel && <IntelligenceSection intel={intel} />}
+
         <p className="mt-10 text-xs text-slate-400">
           Last refreshed: {refreshedAt.toLocaleString()}
         </p>
       </div>
+    </div>
+  );
+}
+
+const INTEL_EVENT_LABELS = {
+  page_view: "Page Views",
+  search: "Searches Run",
+  search_select: "Results Opened",
+  ask_nexus: "Ask Nexus Calls",
+  explore_open: "Explore Opens",
+  filter_applied: "Filters Applied",
+  csv_export: "CSV Exports",
+  view_shared: "Links Copied",
+  tutorial_finished: "Tutorials Finished",
+};
+
+function IntelligenceSection({ intel }) {
+  const total = Object.values(intel.byEvent).reduce((a, b) => a + b, 0);
+
+  if (total === 0) {
+    return (
+      <div className="mt-16 border-t border-slate-200 pt-10">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+          Nexus Intelligence
+        </h2>
+        <p className="mt-3 text-sm text-slate-500">
+          No activity recorded yet.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-16 border-t border-slate-200 pt-10">
+      <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        Nexus Intelligence
+      </h2>
+
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatTile label="Unique Visitors" value={intel.uniqueVisitors.toLocaleString()} />
+        <StatTile label="Sessions" value={intel.sessions.toLocaleString()} />
+        {Object.keys(INTEL_EVENT_LABELS).map((key) =>
+          intel.byEvent[key] ? (
+            <StatTile
+              key={key}
+              label={INTEL_EVENT_LABELS[key]}
+              value={intel.byEvent[key].toLocaleString()}
+            />
+          ) : null
+        )}
+      </div>
+
+      <p className="mt-6 text-sm text-slate-600">
+        Ask Nexus — successful: {intel.askOutcomes.success.toLocaleString()} | failed:{" "}
+        {intel.askOutcomes.error.toLocaleString()}
+        {"  ·  "}
+        Device — desktop: {intel.devices.desktop.toLocaleString()} | mobile:{" "}
+        {intel.devices.mobile.toLocaleString()}
+      </p>
+
+      {intel.topSearches.length > 0 && (
+        <div className="mt-8">
+          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+            Top Searches
+          </h3>
+          <ul className="divide-y divide-slate-200 rounded-lg border border-slate-200">
+            {intel.topSearches.map((s) => (
+              <li
+                key={`${s.mode}:${s.entity}`}
+                className="flex items-center justify-between px-4 py-2 text-sm"
+              >
+                <span className="text-slate-800">{s.entity}</span>
+                <span className="text-xs text-slate-500">
+                  {s.mode} · {s.count.toLocaleString()}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {intel.dailyData.length > 0 && (
+        <div className="mt-8">
+          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+            Intelligence Activity — Last 30 Days
+          </h3>
+          <ul className="space-y-1 text-sm text-slate-600">
+            {intel.dailyData.slice(-14).map((d) => (
+              <li key={d.day} className="flex items-center gap-3">
+                <span className="w-24 shrink-0 text-xs text-slate-500">{d.day}</span>
+                <span
+                  className="h-2 rounded bg-teal-600"
+                  style={{
+                    width: `${Math.max(
+                      2,
+                      (d.count / Math.max(...intel.dailyData.map((x) => x.count))) * 100
+                    )}%`,
+                  }}
+                />
+                <span className="text-xs tabular-nums text-slate-500">{d.count}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

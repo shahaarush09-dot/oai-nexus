@@ -16,6 +16,7 @@ import IntelligenceTutorial, {
 import { loadIntelligenceMetadata } from "@/lib/intelligenceMetadata";
 import { loadIndexData, normalizeKey } from "@/lib/loadIntelligenceData";
 import { buildUrlQuery, readUrlState, syncUrl } from "@/lib/urlState";
+import { track, trackOnce } from "@/lib/trackIntelligence";
 
 const STRIP = [
   { statKey: "diseaseCount", label: "Diseases" },
@@ -172,6 +173,12 @@ export default function IntelligencePageClient() {
   useEffect(() => {
     if (tab === "explore") setExploreOpened(true);
   }, [tab]);
+
+  // One page_view per page load, regardless of remounts or a StrictMode
+  // double-invoke.
+  useEffect(() => {
+    trackOnce("page_view");
+  }, []);
 
   // Apply the shared view once, on the client, after hydration has matched.
   useEffect(() => {

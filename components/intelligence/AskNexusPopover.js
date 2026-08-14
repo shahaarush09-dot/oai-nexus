@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { askNexus, getCachedAsk } from "@/lib/askNexus";
+import { track } from "@/lib/trackIntelligence";
 
 const ENTITY_LABEL = { disease: "disease", company: "company", drug: "drug" };
 
@@ -48,6 +49,10 @@ export default function AskNexusPopover({ target, onClose, onOpenDetail }) {
     if (!target) return;
     setState({ phase: "loading" });
     const result = await askNexus(target.entity, target.name);
+    track("ask_nexus", {
+      entityType: target.entity,
+      outcome: result.status === "success" ? "success" : "error",
+    });
     // The user may have closed or switched entities mid-flight; the result is
     // already cached, so dropping it here loses nothing.
     setState((s) => (s.phase === "loading" ? { phase: "resolved", result } : s));
