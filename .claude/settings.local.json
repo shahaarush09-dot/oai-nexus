@@ -71,7 +71,12 @@
       "Bash(powershell -Command \"Get-CimInstance Win32_Process -Filter 'ProcessId=18812' | Select-Object -ExpandProperty CommandLine\")",
       "Bash(powershell -Command '$p=Get-CimInstance Win32_Process -Filter '\\\\''ProcessId=18812'\\\\''; Get-CimInstance Win32_Process -Filter \\(\"ProcessId=\"+$p.ParentProcessId\\) | Select-Object ProcessId,Name,CommandLine | Format-List')",
       "Bash(powershell -Command \"Stop-Process -Id 18812 -Force -ErrorAction SilentlyContinue; Stop-Process -Id 13420 -Force -ErrorAction SilentlyContinue; Start-Sleep -Seconds 2; if \\(Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue\\) { 'still listening' } else { 'port 3000 free' }\")",
-      "Bash(npx --no-install next build)"
+      "Bash(npx --no-install next build)",
+      "Bash(powershell -Command \"Get-CimInstance Win32_Process -Filter 'ProcessId=25344' | Select-Object -ExpandProperty CommandLine\")",
+      "Bash(powershell -Command '$p=Get-CimInstance Win32_Process -Filter '\\\\''ProcessId=25344'\\\\''; '\\\\''Started: '\\\\''+$p.CreationDate; $par=Get-CimInstance Win32_Process -Filter \\(\"ProcessId=\"+$p.ParentProcessId\\) -ErrorAction SilentlyContinue; if\\($par\\){'\\\\''Parent: '\\\\''+$par.Name+'\\\\'' :: '\\\\''+$par.CommandLine}else{'\\\\''Parent: \\(gone, PID '\\\\''+$p.ParentProcessId+'\\\\''\\)'\\\\''}')",
+      "Bash(powershell -Command '$p=Get-CimInstance Win32_Process -Filter '\\\\''ProcessId=25344'\\\\'' -ErrorAction SilentlyContinue; if\\($p\\){ Stop-Process -Id $p.ParentProcessId -Force -ErrorAction SilentlyContinue; Stop-Process -Id 25344 -Force -ErrorAction SilentlyContinue }; Start-Sleep -Seconds 2; if \\(Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue\\) { '\\\\''still listening'\\\\'' } else { '\\\\''port 3000 free'\\\\'' }')",
+      "Bash(powershell -Command 'for\\($i=0;$i -lt 30;$i++\\){ try { $r=Invoke-WebRequest -Uri '\\\\''http://localhost:3000/intelligence'\\\\'' -UseBasicParsing -TimeoutSec 20; '\\\\''HTTP '\\\\''+$r.StatusCode; break } catch { Start-Sleep -Seconds 3 } }')",
+      "Bash(powershell -Command 'foreach\\($p in @\\('\\\\''/patient'\\\\'','\\\\''/clinical'\\\\'','\\\\''/diligence'\\\\''\\)\\){ try{ $r=Invoke-WebRequest -Uri \\('\\\\''http://localhost:3000'\\\\''+$p\\) -UseBasicParsing -TimeoutSec 60; $p+'\\\\'' -> HTTP '\\\\''+$r.StatusCode }catch{ $p+'\\\\'' -> FAILED: '\\\\''+$_.Exception.Message } }')"
     ]
   }
 }

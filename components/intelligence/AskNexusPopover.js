@@ -1,12 +1,19 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import AskNexusCrossToolButtons from "@/components/intelligence/AskNexusCrossToolButtons";
 import { askNexus, getCachedAsk } from "@/lib/askNexus";
 import { track } from "@/lib/trackIntelligence";
 
 const ENTITY_LABEL = { disease: "disease", company: "company", drug: "drug" };
 
 const POPOVER_WIDTH = 288;
+// A resolved answer carries the three cross-tool buttons, and three
+// columns inside 288px would leave ~90px each — not enough for
+// "Scientific Pipeline", let alone the line explaining it. The popover
+// widens for that state only, so the prompt and loading states keep the
+// compact footprint they were sized for.
+const ANSWER_WIDTH = 520;
 const MAX_HEIGHT = 420;
 const EDGE_GAP = 8;
 
@@ -45,6 +52,22 @@ export default function AskNexusPopover({ target, onClose, onOpenDetail }) {
     };
   }, [onClose]);
 
+  // The width and position below are computed during render from the live
+  // viewport, which only helps if a resize actually causes one. Nothing
+  // else re-renders this component on resize, so an open popover kept the
+  // width it was born with: opened on a desktop and then narrowed to a
+  // phone, a 520px answer hung off the right edge of a 375px screen.
+  const [, onViewportChange] = useState(0);
+  useEffect(() => {
+    const bump = () => onViewportChange((n) => n + 1);
+    window.addEventListener("resize", bump);
+    window.addEventListener("orientationchange", bump);
+    return () => {
+      window.removeEventListener("resize", bump);
+      window.removeEventListener("orientationchange", bump);
+    };
+  }, []);
+
   const ask = useCallback(async () => {
     if (!target) return;
     setState({ phase: "loading" });
@@ -67,7 +90,8 @@ export default function AskNexusPopover({ target, onClose, onOpenDetail }) {
   // On a 375px phone a fixed 288px box plus edge gaps leaves almost no
   // margin, and a tall answer would run past the bottom of the screen —
   // so both axes are fitted to the viewport rather than assumed.
-  const width = Math.min(POPOVER_WIDTH, vw - EDGE_GAP * 2);
+  const showsAnswer = state.phase === "resolved" && state.result.status === "success";
+  const width = Math.min(showsAnswer ? ANSWER_WIDTH : POPOVER_WIDTH, vw - EDGE_GAP * 2);
   const maxHeight = Math.min(MAX_HEIGHT, vh - EDGE_GAP * 2);
 
   return (
@@ -163,6 +187,11 @@ export default function AskNexusPopover({ target, onClose, onOpenDetail }) {
           <p className="border-t border-navy-border pt-2 text-[10px] font-light text-slate-600">
             Sources checked {formatChecked(state.result.checkedAt)}
           </p>
+
+          {/* Only on a successful answer: an error state has nothing to
+              carry into another tool, and offering three onward journeys
+              from a failure reads as deflection. */}
+          <AskNexusCrossToolButtons entityType={target.entity} entityName={target.name} />
 
           <OpenProfileButton target={target} onOpenDetail={onOpenDetail} onClose={onClose} />
         </div>
