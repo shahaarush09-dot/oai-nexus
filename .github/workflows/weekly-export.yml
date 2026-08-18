@@ -24,7 +24,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements-pipeline.txt
 
-           - name: Run pipeline (fetch fresh data)
+              - name: Run pipeline (fetch fresh data)
         run: |
           cd pipeline
           python scripts/run_all.py --force || echo "Pipeline completed with warnings (likely FDA orphan endpoint down) — continuing to export step"
