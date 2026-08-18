@@ -43,7 +43,7 @@ from common import (  # noqa: E402
 
 LOG = get_logger("02_fda_orphan")
 
-OOPD_URL = "https://www.accessdata.fda.gov/scripts/opdlisting/oopd/OOPD_Results.cfm"
+OOPD_URL = "https://www.accessdata.fda.gov/scripts/opdlisting/oopd/"
 RAW_EXPORT = RAW_DIR / "fda_oopd_export.html"
 
 # Maps the export's verbose headers onto tidy column names.
