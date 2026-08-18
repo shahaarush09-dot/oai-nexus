@@ -1,0 +1,62 @@
+name: Weekly Data Export to Nexus
+
+on:
+  schedule:
+    - cron: '0 2 * * 0'  # Every Sunday at 2 AM UTC
+  workflow_dispatch:     # Manual trigger via GitHub UI
+
+jobs:
+  export-data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120  # Allow up to 2 hours for pipeline to complete
+
+    steps:
+      - name: Checkout oai-nexus repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-pipeline.txt
+
+      - name: Run pipeline (fetch fresh data)
+        run: |
+          cd pipeline
+          python scripts/run_all.py --force
+          python scripts/06_export_to_json.py
+
+      - name: Verify JSON files were generated
+        run: |
+          ls -lh pipeline/output/*.json || exit 1
+          wc -l pipeline/output/*.json
+
+      - name: Copy JSON files to public/data
+        run: |
+          cp pipeline/output/*.json public/data/
+          ls -lh public/data/*.json
+
+      - name: Commit and push updated data
+        run: |
+          git config user.name "Data Update Bot"
+          git config user.email "bot@oai-nexus.dev"
+          git add public/data/*.json
+          git diff-cached --quiet || (git commit -m "chore: automated weekly Intelligence data refresh $(date -u +'%Y-%m-%d %H:%M UTC')" && git push origin main)
+
+      - name: Upload pipeline output (for debugging)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-output
+          path: pipeline/output/
+          retention-days: 7
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "Pipeline failed! Check logs above."
+          exit 1
