@@ -185,8 +185,12 @@ def main() -> None:
     # fda_approvals_raw.csv and clinical_trials_raw.csv have one row per
     # disease-match rather than per application/trial, so those two need a
     # distinct-key count instead of a raw row count.
-    LOG.info("Computing sourcing counts from raw CSVs")
-    fda_orphan_designation_count = _row_count(FDA_ORPHAN_CSV)
+        LOG.info("Computing sourcing counts from raw CSVs")
+    if FDA_ORPHAN_CSV.exists():
+        fda_orphan_designation_count = _row_count(FDA_ORPHAN_CSV)
+    else:
+        LOG.warning("%s not found - fdaOrphanDesignationCount will be null", FDA_ORPHAN_CSV.name)
+        fda_orphan_designation_count = None
     drugs_fda_application_count = _distinct_count(FDA_APPROVALS_CSV, "application_number")
     clinical_trial_count = _distinct_count(CLINICAL_TRIALS_CSV, "nct_id")
 
