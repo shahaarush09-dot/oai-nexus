@@ -148,9 +148,11 @@ def _distinct_count(csv_path: Path, key_column: str) -> int:
 
 
 def _row_count(csv_path: Path) -> int:
+    if not csv_path.exists():
+        LOG.warning("CSV not found at %s - reporting count as 0", csv_path)
+        return 0
     with csv_path.open(encoding="utf-8") as f:
         return sum(1 for _ in csv.DictReader(f))
-
 
 def main() -> None:
     if not XLSX_PATH.exists():
