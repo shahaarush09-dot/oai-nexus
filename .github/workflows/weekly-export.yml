@@ -2,13 +2,13 @@ name: Weekly Data Export to Nexus
 
 on:
   schedule:
-    - cron: '0 2 * * 0'  # Every Sunday at 2 AM UTC
-  workflow_dispatch:     # Manual trigger via GitHub UI
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
 
 jobs:
   export-data:
     runs-on: ubuntu-latest
-    timeout-minutes: 120  # Allow up to 2 hours for pipeline to complete
+    timeout-minutes: 120
 
     steps:
       - name: Checkout oai-nexus repo
@@ -24,10 +24,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements-pipeline.txt
 
-              - name: Run pipeline (fetch fresh data)
+      - name: Run pipeline (fetch fresh data)
         run: |
           cd pipeline
-          python scripts/run_all.py --force || echo "Pipeline completed with warnings (likely FDA orphan endpoint down) — continuing to export step"
+          python scripts/run_all.py --force || echo "Pipeline completed with warnings - continuing to export step"
           python scripts/06_export_to_json.py
 
       - name: Verify JSON files were generated
