@@ -45,7 +45,7 @@ jobs:
           git config user.name "Data Update Bot"
           git config user.email "bot@oai-nexus.dev"
           git add public/data/*.json
-          git diff-cached --quiet || (git commit -m "chore: automated weekly Intelligence data refresh $(date -u +'%Y-%m-%d %H:%M UTC')" && git push origin main)
+          git diff --cached --quiet || (git commit -m "chore: automated weekly Intelligence data refresh $(date -u +'%Y-%m-%d %H:%M UTC')" && git push origin main)
 
       - name: Upload pipeline output (for debugging)
         if: always()
