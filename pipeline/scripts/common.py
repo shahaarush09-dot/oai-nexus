@@ -80,8 +80,8 @@ def cache_age_days(path: Path) -> float:
 # ---------------------------------------------------------------- http
 
 USER_AGENT = (
-    "rare-disease-database/1.0 (personal research pipeline; "
-    "https://github.com/local/rare-disease-database)"
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 )
 
 
