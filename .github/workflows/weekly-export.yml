@@ -1,4 +1,4 @@
-name: Weekly Data Export to Nexus
+﻿name: Weekly Data Export to Nexus
 
 on:
   schedule:
@@ -30,7 +30,7 @@ jobs:
           python scripts/run_all.py --force || echo "Pipeline completed with warnings - continuing to export step"
           python scripts/06_export_to_json.py
 
-          - name: Verify JSON files were generated
+      - name: Verify JSON files were generated
         run: |
           ls -lh pipeline/output/json/*.json || exit 1
           wc -l pipeline/output/json/*.json
