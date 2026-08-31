@@ -103,6 +103,16 @@ export default function IntroSequence({ onComplete }) {
   // render at all" — the render guard below needs that difference so it
   // doesn't cut off the exit animation.
   const startedRef = useRef(false);
+  // Every timer the beat timeline has in flight, held here so an ending
+  // that arrives early can cancel the ones that haven't fired yet. The
+  // effect's own cleanup can't do it: it only runs on unmount or when
+  // `stats`/`finish` change, and finishing early changes neither.
+  const timersRef = useRef([]);
+
+  const clearTimeline = useCallback(() => {
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [];
+  }, []);
 
   // Single funnel for every ending — natural completion, the skip button,
   // a reduced-motion bypass, an already-seen session, and the metadata
@@ -112,6 +122,12 @@ export default function IntroSequence({ onComplete }) {
     (instant) => {
       if (finishedRef.current) return;
       finishedRef.current = true;
+      // Before anything else: the sequence is over, so nothing the
+      // timeline still has queued may run. A pending setPhase("summary")
+      // that lands after this point would put the overlay back on screen
+      // with no way off it, since this guard above means the timeline's
+      // own closing finish() can no longer route it back to "done".
+      clearTimeline();
       markPlayed();
       if (instant) {
         setPhase("done");
@@ -124,7 +140,7 @@ export default function IntroSequence({ onComplete }) {
         onComplete?.({ skipped: false });
       }, EXIT_MS);
     },
-    [onComplete]
+    [onComplete, clearTimeline]
   );
 
   useEffect(() => {
@@ -178,20 +194,32 @@ export default function IntroSequence({ onComplete }) {
     timers.push(
       setTimeout(() => finish(false), BEATS.length * BEAT_MS + SUMMARY_MS)
     );
-    return () => timers.forEach(clearTimeout);
+    // Published so an early finish can cancel whatever is still queued.
+    timersRef.current = timers;
+    return () => {
+      timers.forEach(clearTimeout);
+      timersRef.current = [];
+    };
   }, [stats, finish]);
+
+  // Once the sequence has ended, the only frame still worth drawing is its
+  // own exit animation. Derived here rather than inline so the scroll lock
+  // and the render guard below can't disagree about whether the overlay is
+  // on screen — a lock left on behind an invisible overlay is a page that
+  // looks frozen.
+  const ended = finishedRef.current && phase !== "exiting";
 
   // The overlay covers the viewport but doesn't own the wheel, so without
   // this the page scrolls silently behind it and the interface is already
   // halfway down by the time it's revealed.
   useEffect(() => {
-    if (phase === "done") return;
+    if (ended) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = previous;
     };
-  }, [phase]);
+  }, [ended]);
 
   // A fresh instance that finds the intro already played renders nothing,
   // ever — not even for the frame before its mount effect runs. Scoped to
@@ -199,7 +227,11 @@ export default function IntroSequence({ onComplete }) {
   // finish its exit animation, since markPlayed() fires when it begins.
   if (!startedRef.current && hasPlayed()) return null;
 
-  if (phase === "done" || !stats) return null;
+  // "loading" has nothing of its own to show, and the branch below treats
+  // every non-"beats" phase as the summary — so rendering it would paint a
+  // frame of the closing summary grid before the first beat has run. That
+  // frame opens on the answer the sequence is built to arrive at.
+  if (ended || !stats || phase === "loading") return null;
 
   const current = BEATS[beat];
   const exiting = phase === "exiting";
