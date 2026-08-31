@@ -276,7 +276,7 @@ export default function HomePage() {
           opacity={0.4}
         />
         <h2 className="relative mx-auto max-w-6xl px-6 pt-8 text-xs font-semibold uppercase tracking-[0.28em] text-slate-500">
-          Three Specialized AI Modules for Rare Disease
+          Four Specialized AI Modules for Rare Disease
         </h2>
         {modules.map((m, i) => (
           <div key={m.href} className="relative">
